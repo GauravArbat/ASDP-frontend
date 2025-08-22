@@ -8,7 +8,9 @@ export function AuthProvider({ children }){
 
 	const refresh = useCallback(async ()=>{
 		try{
-			const res = await fetch('/api/auth/me', { credentials:'include' })
+const API_BASE_URL = 'https://asdp-banckend.onrender.com';
+
+const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' })
 			const data = await res.json()
 			if(res.ok && data.is_authenticated){ setUser(data.user) } else { setUser(null) }
 		}catch{ setUser(null) }
