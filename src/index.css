@@ -1,0 +1,50 @@
+/* Global styles aligned with templates */
+:root {
+	--primary-color: #2c3e50;
+	--secondary-color: #3498db;
+	--accent-color: #e74c3c;
+	--success-color: #27ae60;
+	--warning-color: #f39c12;
+	--page-bg-start: #667eea;
+	--page-bg-end: #764ba2;
+	--card-bg: rgba(255, 255, 255, 0.95);
+	--text-color: #212529;
+}
+
+@keyframes gradientShift {
+	0% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+	100% { background-position: 0% 50%; }
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+	min-height: 100vh;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background: linear-gradient(135deg, var(--page-bg-start), var(--page-bg-end));
+	background-size: 200% 200%;
+	animation: gradientShift 18s ease infinite;
+	color: var(--text-color);
+}
+
+/* Utility cards same as templates */
+.main-container {
+	background: var(--card-bg);
+	border-radius: 20px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	margin: 20px;
+	padding: 30px;
+}
+
+.step-card {
+	background: #fff;
+	border-radius: 15px;
+	padding: 25px;
+	margin-bottom: 25px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	border-left: 5px solid var(--secondary-color);
+}
+
+.stats-card { background: linear-gradient(135deg, var(--success-color), #2ecc71); color: #fff; border-radius: 15px; padding: 20px; text-align: center; margin: 10px 0; }
+.stats-number { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
