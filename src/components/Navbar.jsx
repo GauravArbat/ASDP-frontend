@@ -1,12 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
+import ProgressIndicator from './ProgressIndicator.jsx'
 
-export default function Navbar(){
+export default function Navbar({ currentStep = 1 }){
 	const { user, authenticated, logout } = useAuth()
+	const location = useLocation()
+	
+	// Determine if we should show progress indicator (only on workflow pages)
+	const showProgress = ['/upload', '/summary', '/configuration', '/outliers', '/weights', '/results'].includes(location.pathname)
+	
 	return (
 		<nav className="navbar navbar-expand-lg bg-body-tertiary shadow-sm mb-3" style={{background:'#fff'}}>
 			<div className="container">
 				<Link className="navbar-brand" to="/"><i className="fas fa-chart-line me-2"></i>ASDP</Link>
+				
+				{/* Progress Indicator - only show on workflow pages */}
+				{showProgress && (
+					<div className="mx-auto">
+						<ProgressIndicator currentStep={currentStep} />
+					</div>
+				)}
+				
 				<div className="ms-auto d-flex align-items-center gap-2">
 					{authenticated ? (
 						<>
