@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from 'react'
+import { API_BASE_URL } from '../config.js'
 
 // Create context outside component to avoid react-refresh issues
 const AuthContext = createContext({ user:null, authenticated:false, refresh:()=>{}, login:async()=>{}, logout:async()=>{} })
@@ -8,8 +9,6 @@ export function AuthProvider({ children }){
 
 	const refresh = useCallback(async ()=>{
 		try{
-const API_BASE_URL = 'https://asdp-banckend.onrender.com';
-
 const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' })
 			const data = await res.json()
 			if(res.ok && data.is_authenticated){ setUser(data.user) } else { setUser(null) }
@@ -19,7 +18,7 @@ const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' }
 	useEffect(()=>{ refresh() }, [refresh])
 
 	const login = useCallback(async (username, password)=>{
-		const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ username, password }), credentials:'include' })
+		const res = await fetch(`${API_BASE_URL}/api/auth/login`, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ username, password }), credentials:'include' })
 		const contentType = res.headers.get('content-type') || ''
 		if(contentType.includes('application/json')){
 			const data = await res.json()
@@ -31,7 +30,7 @@ const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' }
 	}, [refresh])
 
 	const logout = useCallback(async ()=>{
-		await fetch('/api/auth/logout', { method: 'POST', credentials:'include' }); await refresh()
+		await fetch(`${API_BASE_URL}/api/auth/logout`, { method: 'POST', credentials:'include' }); await refresh()
 	}, [refresh])
 
 	return (

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import Navbar from '../components/Navbar.jsx'
+import { API_BASE_URL } from '../config.js'
 
 export default function Admin(){
 	console.log('Admin component rendering...') // Debug log
@@ -27,7 +28,7 @@ export default function Admin(){
 		setLoading(true)
 		setError('')
 		try {
-			const res = await fetch('/api/admin/dashboard', { credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/api/admin/dashboard`, { credentials:'include' })
 			console.log('Admin response status:', res.status) // Debug log
 			console.log('Admin response headers:', res.headers) // Debug log
 			
@@ -61,7 +62,7 @@ export default function Admin(){
 
 	const updateUserRole = useCallback(async (userId, newRole) => {
 		try {
-			const res = await fetch(`/admin/user/${userId}/role`, { 
+			const res = await fetch(`${API_BASE_URL}/admin/user/${userId}/role`, { 
 				method:'POST', 
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ role: newRole }),

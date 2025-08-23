@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import Navbar from '../components/Navbar.jsx'
+import { API_BASE_URL } from '../config.js'
 
 const isNumericType = (t) => typeof t === 'string' && (t.includes('float') || t.includes('int'))
 
@@ -37,7 +38,7 @@ export default function Home(){
 		form.append('file', file)
 		setBusy(true)
 		try {
-			const res = await fetch('/upload', { method: 'POST', body: form, credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: form, credentials:'include' })
 			const text = await res.text()
 			const data = (() => { try { return JSON.parse(text) } catch { return { success: false, error: text } } })()
 			if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`)
@@ -57,7 +58,7 @@ export default function Home(){
 		form.append('file', file)
 		setBusy(true)
 		try {
-			const res = await fetch('/upload', { method: 'POST', body: form, credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: form, credentials:'include' })
 			const text = await res.text()
 			const data = (() => { try { return JSON.parse(text) } catch { return { success: false, error: text } } })()
 			if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`)
@@ -85,7 +86,7 @@ export default function Home(){
 		}
 		if (datasetId) payload.dataset_id = datasetId
 		try {
-			const res = await fetch('/clean', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/clean`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials:'include' })
 			const data = await res.json()
 			if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`)
 			setResults(data)
@@ -103,7 +104,7 @@ export default function Home(){
 			return
 		}
 		try {
-			const res = await fetch('/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: datasetId, format }), credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/report`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: datasetId, format }), credentials:'include' })
 			if (format === 'pdf') {
 				if (!res.ok || !(res.headers.get('content-type') || '').includes('application/pdf')) {
 					const text = await res.text(); throw new Error(text || `HTTP ${res.status}`)
@@ -132,7 +133,7 @@ export default function Home(){
 			return
 		}
 		try {
-			const res = await fetch('/download_data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: datasetId }), credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/download_data`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: datasetId }), credentials:'include' })
 			if (!res.ok) throw new Error(`HTTP ${res.status}`)
 			const blob = await res.blob()
 			const url = URL.createObjectURL(blob)

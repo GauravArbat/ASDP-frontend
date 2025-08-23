@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar.jsx'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
+import { API_BASE_URL } from '../config.js'
 
 export default function Profile(){
 	const [username, setUsername] = useState('')
@@ -18,7 +19,7 @@ export default function Profile(){
     useEffect(()=>{
         (async ()=>{
             try{
-                const res = await fetch('/api/auth/me', { credentials:'include' })
+                const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' })
                 const data = await res.json()
                 if(!res.ok || !data.is_authenticated){
                     navigate('/login')
@@ -41,14 +42,14 @@ export default function Profile(){
 			if(avatarFile) {
 				const avatarForm = new FormData()
 				avatarForm.append('avatar', avatarFile)
-				const avatarRes = await fetch('/api/auth/avatar', { method:'POST', body: avatarForm, credentials:'include' })
+				const avatarRes = await fetch(`${API_BASE_URL}/api/auth/avatar`, { method:'POST', body: avatarForm, credentials:'include' })
 				if(!avatarRes.ok){
 					const text = await avatarRes.text(); throw new Error(text || `HTTP ${avatarRes.status}`)
 				}
 			}
 			
 			// Update profile data
-			const res = await fetch('/api/auth/profile', { 
+			const res = await fetch(`${API_BASE_URL}/api/auth/profile`, { 
 				method:'POST', 
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, email, password }),
@@ -62,7 +63,7 @@ export default function Profile(){
 			setPassword('')
             try{
                 await refresh()
-                const resMe = await fetch('/api/auth/me', { credentials:'include' })
+                const resMe = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' })
                 const dataMe = await resMe.json()
                 if(resMe.ok && dataMe.is_authenticated){
                     setUsername(dataMe.user.username || '')

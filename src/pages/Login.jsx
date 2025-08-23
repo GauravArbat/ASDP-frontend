@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import { useAuth } from '../hooks/useAuth.js'
+import { API_BASE_URL } from '../config.js'
 
 export default function Login(){
 	const [username, setUsername] = useState('')
@@ -17,7 +18,7 @@ export default function Login(){
 			await login(username, password)
 			// Decide destination based on current user role
 			try{
-				const res = await fetch('/api/auth/me', { credentials:'include' })
+				const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials:'include' })
 				const data = await res.json()
 				if(res.ok && data.is_authenticated){
 					navigate(data.user.role === 'admin' ? '/admin' : '/')
