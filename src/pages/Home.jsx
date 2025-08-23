@@ -104,17 +104,38 @@ export default function Home(){
 			return
 		}
 		try {
-			const res = await fetch(`${API_BASE_URL}/report`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: datasetId, format }), credentials:'include' })
+			const res = await fetch(`${API_BASE_URL}/report`, { 
+				method: 'POST', 
+				headers: { 'Content-Type': 'application/json' }, 
+				body: JSON.stringify({ dataset_id: datasetId, format }), 
+				credentials:'include' 
+			})
+			
 			if (format === 'pdf') {
-				if (!res.ok || !(res.headers.get('content-type') || '').includes('application/pdf')) {
-					const text = await res.text(); throw new Error(text || `HTTP ${res.status}`)
+				if (!res.ok) {
+					const errorText = await res.text()
+					throw new Error(errorText || `HTTP ${res.status}`)
 				}
+				
+				const contentType = res.headers.get('content-type') || ''
+				if (!contentType.includes('application/pdf')) {
+					console.warn('Expected PDF but got:', contentType)
+				}
+				
 				const blob = await res.blob()
+				if (blob.size === 0) {
+					throw new Error('Received empty PDF file')
+				}
+				
 				const url = URL.createObjectURL(blob)
 				const a = document.createElement('a')
 				a.href = url
 				a.download = `survey_report_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.pdf`
+				document.body.appendChild(a)
 				a.click()
+				document.body.removeChild(a)
+				URL.revokeObjectURL(url)
+				notify('success', 'PDF report downloaded successfully')
 			} else {
 				const data = await res.json()
 				if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`)
@@ -123,6 +144,7 @@ export default function Home(){
 				w.document.close()
 			}
 		} catch (e) {
+			console.error('Report generation error:', e)
 			notify('error', `Report failed: ${e.message}`)
 		}
 	}, [notify, datasetId])
