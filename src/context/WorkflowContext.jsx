@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
-import { WorkflowContext } from './WorkflowContext.js'
+import { useState, useCallback, createContext } from 'react'
+
+export const WorkflowContext = createContext()
 
 export const WorkflowProvider = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(1)
